@@ -9,9 +9,9 @@ export default function Sidebar() {
 
   const navItems = [
     { href: '/dashboard', icon: <FiHome />, label: 'Dashboard' },
-    { href: '/new-order', icon: <FiPlusCircle />, label: 'New Order' },
-    { href: '/order-menu', icon: <FiList />, label: 'Order' },
-    { href: '/manage-menu', icon: <FiSettings />, label: 'Manage Menu' },
+    { href: '/dashboard/new-order', icon: <FiPlusCircle />, label: 'New Order' },
+    { href: '/dashboard/order-menu', icon: <FiList />, label: 'Order' },
+    { href: '/dashboard/manage-menu', icon: <FiSettings />, label: 'Manage Menu' },
   ]
 
   return (
