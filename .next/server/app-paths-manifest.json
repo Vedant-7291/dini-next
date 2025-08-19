@@ -1,0 +1,6 @@
+{
+  "/(dashboard)/manage-menu/page": "app/(dashboard)/manage-menu/page.js",
+  "/(dashboard)/dashboard/page": "app/(dashboard)/dashboard/page.js",
+  "/(dashboard)/order-menu/page": "app/(dashboard)/order-menu/page.js",
+  "/(dashboard)/new-order/page": "app/(dashboard)/new-order/page.js"
+}
