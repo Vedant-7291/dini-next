@@ -20,4 +20,5 @@ const nextConfig = {
   }
 }
 
-module.exports = nextConfig
+// ES module export (for .mjs files)
+export default nextConfig
