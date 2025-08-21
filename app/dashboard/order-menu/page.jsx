@@ -1,4 +1,4 @@
-// Order Menu page.jsx - Made responsive
+// Order Menu page.jsx - Center aligned order counts
 'use client'
 
 import { FiCheckCircle, FiClock, FiShoppingBag, FiChevronDown } from 'react-icons/fi';
@@ -94,7 +94,7 @@ export default function OrderMenu() {
       {/* Top header section */}
       <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center border-b border-black pb-2 gap-2">
         <h1 className="text-xl lg:text-2xl font-bold">Order Management</h1>
-        <div className="flex gap-3 lg:gap-4 text-sm">
+        <div className="flex justify-center gap-3 lg:gap-4 text-sm w-full lg:w-auto">
           <span className="text-[#00bf63] flex items-center gap-1 font-bold text-base lg:text-lg">
             <FiCheckCircle /> 100 Completed
           </span>
@@ -115,16 +115,36 @@ export default function OrderMenu() {
           <div className="space-y-4 lg:space-y-6">
             {pendingOrders.map((order) => (
               <div key={order.id} className="bg-[#ede9e9] rounded-lg shadow-md overflow-hidden">
-                {/* Order header */}
-                <div className="p-4 pb-0 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
-                  <h3 className="font-semibold">Order #{order.id}</h3>
-                  <div className="flex items-center gap-2 self-end sm:self-auto">
-                    <span className="font-bold flex items-center gap-1 text-lg lg:text-xl">
+                {/* Order header - Two columns layout */}
+                <div className="p-4 flex justify-between items-start gap-4">
+                  {/* Left Column - Order Info */}
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2 mb-2">
+                      <FiShoppingBag className="text-[#cb212d]" size={18} />
+                      <span className="font-semibold">Order #{order.id}</span>
+                    </div>
+                    
+                    <div className="flex flex-col gap-1 text-sm">
+                      <div className="flex items-center gap-2 text-gray-600">
+                        <FiClock size={14} />
+                        <span>{order.time}</span>
+                      </div>
+                      
+                      <div className="flex items-center gap-2">
+                        <FiShoppingBag size={14} />
+                        <span>Table {order.table}</span>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  {/* Right Column - Price and Status */}
+                  <div className="flex flex-row items-end gap-2">
+                    <span className="font-bold text-lg lg:text-xl">
                       ₹ {order.amount}
                     </span>
                     <div className="relative">
                       <button 
-                        className="text-xs sm:text-sm px-2 py-1 bg-[#cb212d] text-white rounded-full flex items-center gap-1 hover:bg-[#b81d28]"
+                        className="cursor-pointer text-xs sm:text-sm px-2 py-1 bg-[#cb212d] text-white rounded-full flex items-center gap-1 hover:bg-[#b81d28]"
                         onClick={() => toggleDropdown(order.id)}
                       >
                         Pending
@@ -132,9 +152,9 @@ export default function OrderMenu() {
                       </button>
                       
                       {openDropdown === order.id && (
-                        <div className="absolute right-0 mt-1 w-40 bg-white border border-gray-200 rounded-md shadow-lg z-10">
+                        <div className="absolute right-0 mt-1 bg-white border border-gray-200 rounded-md shadow-lg z-10">
                           <button 
-                            className="block w-full text-left px-3 py-2 text-sm text-[#00bf63] hover:bg-[#00bf6333]"
+                            className="cursor-pointer block w-full text-left px-3 py-2 text-sm text-[#00bf63] hover:bg-[#00bf6333]"
                             onClick={() => markAsCompleted(order.id)}
                           >
                             Completed
@@ -147,17 +167,6 @@ export default function OrderMenu() {
                 
                 {/* Order details */}
                 <div className="p-4 pt-0 space-y-3">
-                  <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-4 text-sm text-gray-600">
-                    <div className="flex items-center gap-1">
-                      <FiClock size={14} />
-                      <span>{order.time}</span>
-                    </div>
-                    <div className="flex items-center gap-1">
-                      <FiShoppingBag size={14} />
-                      <span>Table {order.table}</span>
-                    </div>
-                  </div>
-                  
                   {/* Order items */}
                   <div className="space-y-2">
                     {order.items.map((item, index) => (
@@ -187,11 +196,31 @@ export default function OrderMenu() {
           <div className="space-y-4 lg:space-y-6">
             {completedOrders.map((order) => (
               <div key={order.id} className="bg-[#ede9e9] rounded-lg shadow-md overflow-hidden">
-                {/* Order header */}
-                <div className="p-4 pb-0 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
-                  <h3 className="font-semibold">Order #{order.id}</h3>
-                  <div className="flex items-center gap-2 self-end sm:self-auto">
-                    <span className="font-bold flex items-center gap-1 text-lg lg:text-xl">
+                {/* Order header - Two columns layout */}
+                <div className="p-4 flex justify-between items-start gap-4">
+                  {/* Left Column - Order Info */}
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2 mb-2">
+                      <FiShoppingBag className="text-[#00bf63]" size={18} />
+                      <span className="font-semibold">Order #{order.id}</span>
+                    </div>
+                    
+                    <div className="flex flex-col gap-1 text-sm">
+                      <div className="flex items-center gap-2 text-gray-600">
+                        <FiClock size={14} />
+                        <span>{order.time}</span>
+                      </div>
+                      
+                      <div className="flex items-center gap-2">
+                        <FiShoppingBag size={14} />
+                        <span>Table {order.table}</span>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  {/* Right Column - Price and Status */}
+                  <div className="flex flex-row items-end gap-2">
+                    <span className="font-bold text-lg lg:text-xl">
                       ₹ {order.amount}
                     </span>
                     <span className="text-xs sm:text-sm px-2 py-1 bg-[#00bf63] text-white rounded-full">
@@ -202,17 +231,6 @@ export default function OrderMenu() {
                 
                 {/* Order details */}
                 <div className="p-4 pt-0 space-y-3">
-                  <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-4 text-sm text-gray-600">
-                    <div className="flex items-center gap-1">
-                      <FiClock size={14} />
-                      <span>{order.time}</span>
-                    </div>
-                    <div className="flex items-center gap-1">
-                      <FiShoppingBag size={14} />
-                      <span>Table {order.table}</span>
-                    </div>
-                  </div>
-                  
                   {/* Order items */}
                   <div className="space-y-2">
                     {order.items.map((item, index) => (
