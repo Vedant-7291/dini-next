@@ -1,3 +1,4 @@
+// Order Menu page.jsx - Made responsive
 'use client'
 
 import { FiCheckCircle, FiClock, FiShoppingBag, FiChevronDown } from 'react-icons/fi';
@@ -12,33 +13,33 @@ export default function OrderMenu() {
       id: 6,
       time: '15 mins ago',
       table: '0003',
-      amount: '$24.50',
+      amount: '24.50',
       items: [
-        { name: 'Burger', price: '$8.50' },
-        { name: 'Pizza', price: '$12.00' },
-        { name: 'Coke', price: '$4.00' },
+        { name: 'Burger', price: '8.50' },
+        { name: 'Pizza', price: '12.00' },
+        { name: 'Coke', price: '4.00' },
       ]
     },
     {
       id: 7,
       time: '25 mins ago',
       table: '0005',
-      amount: '$18.75',
+      amount: '18.75',
       items: [
-        { name: 'Pasta', price: '$10.00' },
-        { name: 'Garlic Bread', price: '$5.00' },
-        { name: 'Lemonade', price: '$3.75' },
+        { name: 'Pasta', price: '10.00' },
+        { name: 'Garlic Bread', price: '5.00' },
+        { name: 'Lemonade', price: '3.75' },
       ]
     },
     {
       id: 8,
       time: '35 mins ago',
       table: '0002',
-      amount: '$32.25',
+      amount: '32.25',
       items: [
-        { name: 'Steak', price: '$22.00' },
-        { name: 'Mashed Potatoes', price: '$6.00' },
-        { name: 'Red Wine', price: '$4.25' },
+        { name: 'Steak', price: '22.00' },
+        { name: 'Mashed Potatoes', price: '6.00' },
+        { name: 'Red Wine', price: '4.25' },
       ]
     }
   ];
@@ -48,33 +49,33 @@ export default function OrderMenu() {
       id: 1,
       time: '1 hour ago',
       table: '0001',
-      amount: '$24.50',
+      amount: '24.50',
       items: [
-        { name: 'Burger', price: '$8.50' },
-        { name: 'Pizza', price: '$12.00' },
-        { name: 'Coke', price: '$4.00' },
+        { name: 'Burger', price: '8.50' },
+        { name: 'Pizza', price: '12.00' },
+        { name: 'Coke', price: '4.00' },
       ]
     },
     {
       id: 2,
       time: '2 hours ago',
       table: '0004',
-      amount: '$18.00',
+      amount: '18.00',
       items: [
-        { name: 'Pasta', price: '$10.00' },
-        { name: 'Garlic Bread', price: '$5.00' },
-        { name: 'Lemonade', price: '$3.00' },
+        { name: 'Pasta', price: '10.00' },
+        { name: 'Garlic Bread', price: '5.00' },
+        { name: 'Lemonade', price: '3.00' },
       ]
     },
     {
       id: 3,
       time: '3 hours ago',
       table: '0006',
-      amount: '$28.50',
+      amount: '28.50',
       items: [
-        { name: 'Fish & Chips', price: '$14.00' },
-        { name: 'Beer', price: '$6.00' },
-        { name: 'Ice Cream', price: '$8.50' },
+        { name: 'Fish & Chips', price: '14.00' },
+        { name: 'Beer', price: '6.00' },
+        { name: 'Ice Cream', price: '8.50' },
       ]
     }
   ];
@@ -89,41 +90,41 @@ export default function OrderMenu() {
   };
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6 lg:space-y-8">
       {/* Top header section */}
-      <div className="flex justify-between items-center border-b border-black pb-2">
-        <h1 className="text-2xl font-bold">Order Management</h1>
-        <div className="flex gap-4 text-sm">
-          <span className="text-[#00bf63] flex items-center gap-1 font-bold">
+      <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center border-b border-black pb-2 gap-2">
+        <h1 className="text-xl lg:text-2xl font-bold">Order Management</h1>
+        <div className="flex gap-3 lg:gap-4 text-sm">
+          <span className="text-[#00bf63] flex items-center gap-1 font-bold text-base lg:text-lg">
             <FiCheckCircle /> 100 Completed
           </span>
-          <span className="text-[#cb212d] flex items-center gap-1 font-bold">
+          <span className="text-[#cb212d] flex items-center gap-1 font-bold text-base lg:text-xl">
             <FiClock /> 24 Pending
           </span>
         </div>
       </div>
       
       {/* Main content grid */}
-      <div className="grid grid-cols-2 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8">
         {/* Pending orders column */}
         <div>
-          <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
-            <FiClock className="text-[#cb212d]" /> Pending Orders
+          <h2 className="text-lg lg:text-xl font-semibold mb-4 flex items-center gap-2">
+            <FiClock className="text-[#cb212d] text-xl" /> Pending Orders
           </h2>
           
-          <div className="space-y-6">
+          <div className="space-y-4 lg:space-y-6">
             {pendingOrders.map((order) => (
               <div key={order.id} className="bg-[#ede9e9] rounded-lg shadow-md overflow-hidden">
                 {/* Order header */}
-                <div className="p-4 flex justify-between items-center">
+                <div className="p-4 pb-0 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
                   <h3 className="font-semibold">Order #{order.id}</h3>
-                  <div className="flex items-center gap-2">
-                    <span className="font-bold flex items-center gap-1">
-                      <FiShoppingBag /> {order.amount}
+                  <div className="flex items-center gap-2 self-end sm:self-auto">
+                    <span className="font-bold flex items-center gap-1 text-lg lg:text-xl">
+                      ₹ {order.amount}
                     </span>
                     <div className="relative">
                       <button 
-                        className="text-xs px-2 py-1 bg-[#cb212d] text-white rounded-full flex items-center gap-1 hover:bg-[#b81d28]"
+                        className="text-xs sm:text-sm px-2 py-1 bg-[#cb212d] text-white rounded-full flex items-center gap-1 hover:bg-[#b81d28]"
                         onClick={() => toggleDropdown(order.id)}
                       >
                         Pending
@@ -146,7 +147,7 @@ export default function OrderMenu() {
                 
                 {/* Order details */}
                 <div className="p-4 pt-0 space-y-3">
-                  <div className="flex items-center gap-4 text-sm text-gray-600">
+                  <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-4 text-sm text-gray-600">
                     <div className="flex items-center gap-1">
                       <FiClock size={14} />
                       <span>{order.time}</span>
@@ -165,9 +166,9 @@ export default function OrderMenu() {
                           <div className="w-5 h-5 rounded-full bg-[#cb212d33] flex items-center justify-center text-[#cb212d] text-xs">
                             {index + 1}
                           </div>
-                          <span>{item.name}</span>
+                          <span className="text-sm lg:text-base">{item.name}</span>
                         </div>
-                        <span className="font-medium">{item.price}</span>
+                        <span className="font-medium text-sm lg:text-base">₹{item.price}</span>
                       </div>
                     ))}
                   </div>
@@ -179,21 +180,21 @@ export default function OrderMenu() {
         
         {/* Completed orders column */}
         <div>
-          <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
-            <FiCheckCircle className="text-[#00bf63]" /> Completed Orders
+          <h2 className="text-lg lg:text-xl font-semibold mb-4 flex items-center gap-2">
+            <FiCheckCircle className="text-[#00bf63] text-xl" /> Completed Orders
           </h2>
           
-          <div className="space-y-6">
+          <div className="space-y-4 lg:space-y-6">
             {completedOrders.map((order) => (
               <div key={order.id} className="bg-[#ede9e9] rounded-lg shadow-md overflow-hidden">
                 {/* Order header */}
-                <div className="p-4 flex justify-between items-center">
+                <div className="p-4 pb-0 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
                   <h3 className="font-semibold">Order #{order.id}</h3>
-                  <div className="flex items-center gap-2">
-                    <span className="font-bold flex items-center gap-1">
-                      <FiShoppingBag /> {order.amount}
+                  <div className="flex items-center gap-2 self-end sm:self-auto">
+                    <span className="font-bold flex items-center gap-1 text-lg lg:text-xl">
+                      ₹ {order.amount}
                     </span>
-                    <span className="text-xs px-2 py-1 bg-[#00bf63] text-white rounded-full">
+                    <span className="text-xs sm:text-sm px-2 py-1 bg-[#00bf63] text-white rounded-full">
                       Completed
                     </span>
                   </div>
@@ -201,7 +202,7 @@ export default function OrderMenu() {
                 
                 {/* Order details */}
                 <div className="p-4 pt-0 space-y-3">
-                  <div className="flex items-center gap-4 text-sm text-gray-600">
+                  <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-4 text-sm text-gray-600">
                     <div className="flex items-center gap-1">
                       <FiClock size={14} />
                       <span>{order.time}</span>
@@ -220,9 +221,9 @@ export default function OrderMenu() {
                           <div className="w-5 h-5 rounded-full bg-[#cb212d33] flex items-center justify-center text-[#cb212d] text-xs">
                             {index + 1}
                           </div>
-                          <span>{item.name}</span>
+                          <span className="text-sm lg:text-base">{item.name}</span>
                         </div>
-                        <span className="font-medium">{item.price}</span>
+                        <span className="font-medium text-sm lg:text-base">₹{item.price}</span>
                       </div>
                     ))}
                   </div>

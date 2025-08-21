@@ -1,7 +1,5 @@
 {
-  "/_not-found/page": "app/_not-found/page.js",
-  "/dashboard/page": "app/dashboard/page.js",
   "/dashboard/new-order/page": "app/dashboard/new-order/page.js",
-  "/dashboard/manage-menu/page": "app/dashboard/manage-menu/page.js",
+  "/dashboard/page": "app/dashboard/page.js",
   "/dashboard/order-menu/page": "app/dashboard/order-menu/page.js"
 }
