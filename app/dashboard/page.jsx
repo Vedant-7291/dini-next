@@ -1,4 +1,4 @@
-// Dashboard page.jsx - Made responsive
+// Dashboard page.jsx - Fixed dropdown selection
 'use client'
 
 import { FiPieChart, FiClock, FiCheckCircle, FiChevronDown } from 'react-icons/fi';
@@ -31,6 +31,9 @@ export default function Dashboard() {
     setIsDropdownOpen(false);
   };
 
+  // Available periods for dropdown
+  const periods = ['Today', 'Weekly', 'Monthly'];
+
   return (
     <div className="space-y-8 h-auto lg:h-[73vh]">
       <div className="space-y-4">
@@ -38,7 +41,7 @@ export default function Dashboard() {
           <h2 className="text-xl lg:text-2xl font-bold flex items-center gap-2">Dashboard Overview</h2>
           <div className="relative self-end lg:self-auto">
             <button 
-              className="px-3 py-2 mb-1 bg-[#ede9e9] text-[#cb212d] rounded-md text-sm flex items-center gap-1 hover:bg-[#e6e0e0] transition-colors"
+              className="px-3 py-2 mb-1 bg-[#ede9e9] text-[#cb212d] rounded-md text-sm flex items-center gap-1 hover:bg-[#e6e0e0] transition-colors cursor-pointer"
               onClick={() => setIsDropdownOpen(!isDropdownOpen)}
             >
               {selectedPeriod}
@@ -46,19 +49,18 @@ export default function Dashboard() {
             </button>
             
             {isDropdownOpen && (
-              <div className="absolute right-0 mt-1 w-32 bg-white border border-gray-200 rounded-md shadow-lg z-10">
-                <button 
-                  className="block w-full text-left px-4 py-2 text-sm hover:bg-[#ede9e9] text-[#cb212d]"
-                  onClick={() => handlePeriodSelect('Weekly')}
-                >
-                  Weekly
-                </button>
-                <button 
-                  className="block w-full text-left px-4 py-2 text-sm hover:bg-[#ede9e9] text-[#cb212d]"
-                  onClick={() => handlePeriodSelect('Monthly')}
-                >
-                  Monthly
-                </button>
+              <div className="absolute right-0 mt-1 w-26 bg-white border border-gray-200 rounded-md shadow-lg z-10">
+                {periods.map((period) => (
+                  period !== selectedPeriod && (
+                    <button 
+                      key={period}
+                      className="block w-full text-left px-4 py-2 text-sm hover:bg-[#ede9e9] text-[#cb212d] cursor-pointer"
+                      onClick={() => handlePeriodSelect(period)}
+                    >
+                      {period}
+                    </button>
+                  )
+                ))}
               </div>
             )}
           </div>

@@ -6,6 +6,7 @@ import { useState } from 'react';
 
 export default function OrderMenu() {
   const [openDropdown, setOpenDropdown] = useState(null);
+  const [showCompleted, setShowCompleted] = useState(false);
 
   // Hardcoded orders data
   const pendingOrders = [
@@ -104,10 +105,28 @@ export default function OrderMenu() {
         </div>
       </div>
       
+      {/* Mobile toggle button */}
+      <div className="lg:hidden flex justify-center">
+        <div className="bg-[#ede9e9] rounded-full p-1 flex">
+          <button
+            className={`px-4 py-2 rounded-full text-sm font-medium ${!showCompleted ? 'bg-[#cb212d] text-white' : 'text-gray-600'}`}
+            onClick={() => setShowCompleted(false)}
+          >
+            Pending Orders
+          </button>
+          <button
+            className={`px-4 py-2 rounded-full text-sm font-medium ${showCompleted ? 'bg-[#00bf63] text-white' : 'text-gray-600'}`}
+            onClick={() => setShowCompleted(true)}
+          >
+            Completed Orders
+          </button>
+        </div>
+      </div>
+      
       {/* Main content grid */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8">
-        {/* Pending orders column */}
-        <div>
+        {/* Pending orders column - hidden on mobile when showing completed */}
+        <div className={showCompleted ? 'hidden lg:block' : ''}>
           <h2 className="text-lg lg:text-xl font-semibold mb-4 flex items-center gap-2">
             <FiClock className="text-[#cb212d] text-xl" /> Pending Orders
           </h2>
@@ -187,8 +206,8 @@ export default function OrderMenu() {
           </div>
         </div>
         
-        {/* Completed orders column */}
-        <div>
+        {/* Completed orders column - hidden on mobile when showing pending */}
+        <div className={!showCompleted ? 'hidden lg:block' : ''}>
           <h2 className="text-lg lg:text-xl font-semibold mb-4 flex items-center gap-2">
             <FiCheckCircle className="text-[#00bf63] text-xl" /> Completed Orders
           </h2>
@@ -199,7 +218,7 @@ export default function OrderMenu() {
                 {/* Order header - Two columns layout */}
                 <div className="p-4 flex justify-between items-start gap-4">
                   {/* Left Column - Order Info */}
-                  <div className="flex-1">
+                  <div className="lg:flex-1 flex-col">
                     <div className="flex items-center gap-2 mb-2">
                       <FiShoppingBag className="text-[#00bf63]" size={18} />
                       <span className="font-semibold">Order #{order.id}</span>
@@ -219,7 +238,7 @@ export default function OrderMenu() {
                   </div>
                   
                   {/* Right Column - Price and Status */}
-                  <div className="flex flex-row items-end gap-2">
+                  <div className="flex lg:flex-row flex-col items-end gap-2">
                     <span className="font-bold text-lg lg:text-xl">
                       ₹ {order.amount}
                     </span>

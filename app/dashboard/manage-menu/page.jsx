@@ -18,12 +18,12 @@ export default function ManageMenu() {
 
   // Hardcoded menu items
   const [menuItems, setMenuItems] = useState([
-    { id: 1, name: 'Burger', price: '$8.50', category: 'Main' },
-    { id: 2, name: 'Pizza', price: '$12.00', category: 'Main' },
-    { id: 3, name: 'Pasta', price: '$10.00', category: 'Main' },
-    { id: 4, name: 'Salad', price: '$8.00', category: 'Starter' },
-    { id: 5, name: 'Coke', price: '$4.00', category: 'Drink' },
-    { id: 6, name: 'Ice Cream', price: '$6.00', category: 'Dessert' },
+    { id: 1, name: 'Burger', price: '8.50', category: 'Main' },
+    { id: 2, name: 'Pizza', price: '12.00', category: 'Main' },
+    { id: 3, name: 'Pasta', price: '10.00', category: 'Main' },
+    { id: 4, name: 'Salad', price: '8.00', category: 'Starter' },
+    { id: 5, name: 'Coke', price: '4.00', category: 'Drink' },
+    { id: 6, name: 'Ice Cream', price: '6.00', category: 'Dessert' },
   ]);
 
   // Handle image upload
@@ -237,48 +237,48 @@ export default function ManageMenu() {
             <table className="w-full">
               <thead>
                 <tr className="bg-[#cb212d33]">
-                  <th className="text-left py-3 px-4 lg:py-4 lg:px-6 font-medium text-[#cb212d] border-[#b81d28] cursor-default">Item Name</th>
-                  <th className="text-left py-3 px-4 lg:py-4 lg:px-6 font-medium text-[#cb212d] border-[#b81d28] cursor-default">Price</th>
-                  <th className="text-center py-3 px-4 lg:py-4 lg:px-6 font-medium text-[#cb212d] border-[#b81d28] cursor-default">Category</th>
-                  <th className="text-right py-3 px-4 lg:py-4 lg:px-6 font-medium text-[#cb212d] border-[#b81d28] cursor-default">Actions</th>
+                  <th className="text-left py-2 px-2 lg:py-4 lg:px-6 font-medium text-[#cb212d] border-[#b81d28] cursor-default text-xs lg:text-base">Item Name</th>
+                  <th className="text-left py-2 px-2 lg:py-4 lg:px-6 font-medium text-[#cb212d] border-[#b81d28] cursor-default text-xs lg:text-base">Price</th>
+                  <th className="text-center py-2 px-2 lg:py-4 lg:px-6 font-medium text-[#cb212d] border-[#b81d28] cursor-default text-xs lg:text-base">Category</th>
+                  <th className="text-right py-2 px-2 lg:py-4 lg:px-6 font-medium text-[#cb212d] border-[#b81d28] cursor-default text-xs lg:text-base">Actions</th>
                 </tr>
               </thead>
               <tbody>
                 {menuItems.map((item) => (
                   <tr key={item.id} className="border-b border-gray-100 hover:bg-gray-50 transition-colors">
-                    <td className="py-3 px-4 lg:py-4 lg:px-6 font-medium text-gray-800">
+                    <td className="py-2 px-2 lg:py-4 lg:px-6 font-medium text-gray-800 text-xs lg:text-base">
                       {item.isEditing ? (
                         <input
                           type="text"
                           value={item.editName}
                           onChange={(e) => updateEditableField(item.id, 'editName', e.target.value)}
-                          className="w-full p-1 border border-gray-300 rounded-md focus:ring-1 focus:ring-[#cb212d33] outline-none"
+                          className="w-full p-1 border border-gray-300 rounded-md focus:ring-1 focus:ring-[#cb212d33] outline-none text-xs lg:text-base"
                         />
                       ) : (
-                        item.name
+                        <span className="text-xs lg:text-base">{item.name}</span>
                       )}
                     </td>
-                    <td className="py-3 px-4 lg:py-4 lg:px-6 text-gray-600">
+                    <td className="py-2 px-2 lg:py-4 lg:px-6 text-gray-600 text-xs lg:text-base">
                       {item.isEditing ? (
                         <div className="relative">
-                          <span className="absolute inset-y-0 left-0 flex items-center pl-1 text-gray-500">$</span>
+                          <span className="absolute inset-y-0 left-0 flex items-center pl-1 text-gray-500 text-xs lg:text-base">$</span>
                           <input
                             type="text"
                             value={item.editPrice}
                             onChange={(e) => updateEditableField(item.id, 'editPrice', e.target.value)}
-                            className="w-full pl-6 p-1 border border-gray-300 rounded-md focus:ring-1 focus:ring-[#cb212d33] outline-none"
+                            className="w-full pl-5 p-1 border border-gray-300 rounded-md focus:ring-1 focus:ring-[#cb212d33] outline-none text-xs lg:text-base"
                           />
                         </div>
                       ) : (
-                        item.price
+                        <span className="text-xs lg:text-base">{item.price}</span>
                       )}
                     </td>
-                    <td className="py-3 px-4 lg:py-4 lg:px-6 text-center">
+                    <td className="py-2 px-2 lg:py-4 lg:px-6 text-center">
                       {item.isEditing ? (
                         <select
                           value={item.editCategory}
                           onChange={(e) => updateEditableField(item.id, 'editCategory', e.target.value)}
-                          className="px-2 py-1 bg-[#ede9e9] text-gray-700 rounded-full text-xs lg:text-sm border border-gray-300 focus:ring-1 focus:ring-[#cb212d33] outline-none cursor-pointer"
+                          className="px-1 py-0.5 lg:px-2 lg:py-1 bg-[#ede9e9] text-gray-700 rounded-full text-xs lg:text-sm border border-gray-300 focus:ring-1 focus:ring-[#cb212d33] outline-none cursor-pointer"
                         >
                           <option value="Main">Main</option>
                           <option value="Starter">Starter</option>
@@ -286,44 +286,44 @@ export default function ManageMenu() {
                           <option value="Dessert">Dessert</option>
                         </select>
                       ) : (
-                        <span className="px-2 py-1 bg-[#ede9e9] text-gray-700 rounded-full text-xs lg:text-sm text-center">
+                        <span className="px-1 py-0.5 lg:px-2 lg:py-1 bg-[#ede9e9] text-gray-700 rounded-full text-xs lg:text-sm text-center">
                           {item.category}
                         </span>
                       )}
                     </td>
-                    <td className="py-3 px-4 lg:py-4 lg:px-6">
+                    <td className="py-2 px-2 lg:py-4 lg:px-6">
                       {item.isEditing ? (
-                        <div className="flex justify-end gap-2 lg:gap-3">
+                        <div className="flex justify-end gap-1 lg:gap-3">
                           <button 
                             onClick={() => handleSaveEdit(item)}
-                            className="p-1 lg:p-2 text-[#00bf63] hover:text-white hover:bg-[#00bf63] rounded-full transition-colors cursor-pointer"
+                            className="p-1 text-[#00bf63] hover:text-white hover:bg-[#00bf63] rounded-full transition-colors cursor-pointer"
                             title="Save"
                           >
-                            <FiCheck size={16} />
+                            <FiCheck size={14} className="lg:size-4" />
                           </button>
                           <button 
                             onClick={() => cancelEdit(item)}
-                            className="p-1 lg:p-2 text-gray-600 hover:text-white hover:bg-gray-600 rounded-full transition-colors cursor-pointer"
+                            className="p-1 text-gray-600 hover:text-white hover:bg-gray-600 rounded-full transition-colors cursor-pointer"
                             title="Cancel"
                           >
-                            <FiX size={16} />
+                            <FiX size={14} className="lg:size-4" />
                           </button>
                         </div>
                       ) : (
-                        <div className="flex justify-end gap-2 lg:gap-3">
+                        <div className="flex justify-end gap-1 lg:gap-3">
                           <button 
                             onClick={() => handleEdit(item)}
-                            className="p-1 lg:p-2 text-[#00bf63] hover:text-white hover:bg-[#00bf63] rounded-full transition-colors cursor-pointer"
+                            className="p-1 text-[#00bf63] hover:text-white hover:bg-[#00bf63] rounded-full transition-colors cursor-pointer"
                             title="Edit"
                           >
-                            <FiEdit size={16} />
+                            <FiEdit size={14} className="lg:size-4" />
                           </button>
                           <button 
                             onClick={() => setDeleteConfirm(item.id)}
-                            className="p-1 lg:p-2 text-[#cb212d] hover:text-white hover:bg-[#cb212d] rounded-full transition-colors cursor-pointer"
+                            className="p-1 text-[#cb212d] hover:text-white hover:bg-[#cb212d] rounded-full transition-colors cursor-pointer"
                             title="Delete"
                           >
-                            <FiTrash2 size={16} />
+                            <FiTrash2 size={14} className="lg:size-4" />
                           </button>
                         </div>
                       )}

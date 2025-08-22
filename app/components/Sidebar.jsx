@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { FiHome, FiPlusCircle, FiList, FiSettings, FiX } from 'react-icons/fi'
+import { FiHome, FiPlusCircle, FiList, FiSettings, FiX, FiCreditCard } from 'react-icons/fi'
 import { useState, useEffect } from 'react'
 
 export default function Sidebar() {
@@ -14,6 +14,7 @@ export default function Sidebar() {
     { href: '/dashboard/new-order', icon: <FiPlusCircle />, label: 'New Order' },
     { href: '/dashboard/order-menu', icon: <FiList />, label: 'Order' },
     { href: '/dashboard/manage-menu', icon: <FiSettings />, label: 'Manage Menu' },
+    { href: '/dashboard/upi-id', icon: <FiCreditCard />, label: 'Add UPI ID' },
   ]
 
   const toggleSidebar = () => {
@@ -62,8 +63,8 @@ export default function Sidebar() {
           w-64 top-0 left-0
         `}
       >
-        <div className="p-6 bg-white flex justify-between items-center">
-          <h1 className="text-2xl font-bold text-[#cb212d] border-b border-[#cb212d]">
+        <div className="p-6 bg-white flex justify-center items-center">
+          <h1 className="text-2xl font-bold text-[#cb212d] border-b border-[#cb212d] text-center">
             SMARTDINI
           </h1>
           <button className="lg:hidden text-gray-500" onClick={toggleSidebar}>

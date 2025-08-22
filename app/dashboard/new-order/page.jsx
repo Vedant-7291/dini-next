@@ -132,11 +132,11 @@ export default function NewOrder() {
               </div>
               
               {/* Right Column - Price and Actions */}
-              <div className="flex flex-row items-end gap-2">
+              <div className="flex flex-col lg:flex-row  items-end gap-2">
                 <span className="font-bold text-lg lg:text-xl">
                   ₹ {order.amount}
                 </span>
-                <div className="flex gap-2">
+                <div className="flex flex-col lg:flex-row gap-2">
                   <button 
                     onClick={() => handleAcceptOrder(order.id)}
                     className="px-3 py-1 bg-[#00bf63] text-white rounded flex items-center gap-1 text-sm cursor-pointer hover:bg-[#00a758] transition-colors"

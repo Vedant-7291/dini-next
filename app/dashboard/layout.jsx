@@ -26,7 +26,7 @@ export default function DashboardLayout({ children }) {
       <div className="lg:hidden fixed top-5 left-5 z-50">
         <button 
           id="mobile-sidebar-toggle"
-          className="w-12 h-12 bg-[#cb212d] text-white rounded-full flex items-center justify-center shadow-lg text-xl"
+          className="w-12 h-12 bg-white text-[#cb212d] rounded-full flex items-center justify-center shadow-lg text-xl"
         >
           ☰
         </button>
@@ -43,7 +43,7 @@ export default function DashboardLayout({ children }) {
       </div>
       
       {/* Main content */}
-      <div className="lg:ml-80 flex-1 p-4 lg:p-8 mt-4 lg:mt-0">
+      <div className="lg:ml-80 flex-1 p-4 lg:p-8 mt-0">
         <div className="hidden lg:block">
           <Header />
         </div>
