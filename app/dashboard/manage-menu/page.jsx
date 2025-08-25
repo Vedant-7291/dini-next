@@ -41,7 +41,7 @@ export default function ManageMenu() {
   const fetchMenuItems = async () => {
     try {
       setLoading(true);
-      const response = await fetch('http://localhost:5000/api/menu');
+      const response = await fetch('https://dini-next-kvwx.vercel.app/api/menu');
       if (response.ok) {
         const data = await response.json();
         setMenuItems(data);
@@ -111,7 +111,7 @@ export default function ManageMenu() {
         formData.append('image', editFileInputRef.current.files[0]);
       }
 
-      const response = await fetch(`http://localhost:5000/api/menu/${editingItem._id}`, {
+      const response = await fetch(`https://dini-next-kvwx.vercel.app/api/menu/${editingItem._id}`, {
         method: 'PUT',
         body: formData,
       });
@@ -144,7 +144,7 @@ export default function ManageMenu() {
       setLoading(true);
       setError('');
       
-      const response = await fetch(`http://localhost:5000/api/menu/${id}`, {
+      const response = await fetch(`https://dini-next-kvwx.vercel.app/api/menu/${id}`, {
         method: 'DELETE',
       });
 
@@ -185,7 +185,7 @@ export default function ManageMenu() {
         formData.append('image', image);
       }
 
-      const response = await fetch('http://localhost:5000/api/menu', {
+      const response = await fetch('https://dini-next-kvwx.vercel.app/api/menu', {
         method: 'POST',
         body: formData,
       });

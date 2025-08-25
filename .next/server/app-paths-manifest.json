@@ -2,6 +2,7 @@
   "/favicon.ico/route": "app/favicon.ico/route.js",
   "/page": "app/page.js",
   "/dashboard/page": "app/dashboard/page.js",
-  "/dashboard/upi-id/page": "app/dashboard/upi-id/page.js",
+  "/dashboard/order-menu/page": "app/dashboard/order-menu/page.js",
+  "/dashboard/new-order/page": "app/dashboard/new-order/page.js",
   "/dashboard/manage-menu/page": "app/dashboard/manage-menu/page.js"
 }

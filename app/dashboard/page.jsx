@@ -17,7 +17,7 @@ export default function Dashboard() {
       setLoading(true);
       
       // Fetch order statistics
-      const statsResponse = await fetch('http://localhost:5000/api/orders/stats');
+      const statsResponse = await fetch('https://dini-next-kvwx.vercel.app/api/orders/stats');
       const statsData = statsResponse.ok ? await statsResponse.json() : { total: 0, pending: 0, accepted: 0, completed: 0 };
       
       // For now, using dummy chart data - you can implement real chart data based on your needs

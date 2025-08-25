@@ -18,15 +18,15 @@ export default function OrderMenu() {
       setLoading(true);
       
       // Fetch accepted orders
-      const acceptedResponse = await fetch('http://localhost:5000/api/orders?status=accepted');
+      const acceptedResponse = await fetch('https://dini-next-kvwx.vercel.app/api/orders?status=accepted');
       const acceptedData = acceptedResponse.ok ? await acceptedResponse.json() : [];
       
       // Fetch completed orders
-      const completedResponse = await fetch('http://localhost:5000/api/orders?status=completed');
+      const completedResponse = await fetch('https://dini-next-kvwx.vercel.app/api/orders?status=completed');
       const completedData = completedResponse.ok ? await completedResponse.json() : [];
       
       // Fetch stats
-      const statsResponse = await fetch('http://localhost:5000/api/orders/stats');
+      const statsResponse = await fetch('https://dini-next-kvwx.vercel.app/api/orders/stats');
       const statsData = statsResponse.ok ? await statsResponse.json() : { total: 0, accepted: 0, completed: 0 };
       
       setAcceptedOrders(acceptedData);
@@ -244,12 +244,7 @@ export default function OrderMenu() {
                         <FiShoppingBag size={14} />
                         <span>Table {order.tableNumber}</span>
                       </div>
-                      {order.completedAt && (
-                        <div className="flex items-center gap-2 text-green-600">
-                          <FiCheckCircle size={14} />
-                          <span>Completed {formatTimeAgo(order.completedAt)}</span>
-                        </div>
-                      )}
+                     
                     </div>
                   </div>
                   

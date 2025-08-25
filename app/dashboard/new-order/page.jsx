@@ -12,7 +12,7 @@ export default function NewOrder() {
   const fetchOrders = async () => {
     try {
       setLoading(true);
-      const response = await fetch('http://localhost:5000/api/orders?status=pending');
+      const response = await fetch('https://dini-next-kvwx.vercel.app/api/orders?status=pending');
       if (response.ok) {
         const data = await response.json();
         setOrders(data);
@@ -46,7 +46,7 @@ export default function NewOrder() {
   // Handle accept order
   const handleAcceptOrder = async (orderId) => {
     try {
-      const response = await fetch(`http://localhost:5000/api/orders/${orderId}/status`, {
+      const response = await fetch(`https://dini-next-kvwx.vercel.app/api/orders/${orderId}/status`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
@@ -68,7 +68,7 @@ export default function NewOrder() {
   // Handle reject order
   const handleRejectOrder = async (orderId) => {
     try {
-      const response = await fetch(`http://localhost:5000/api/orders/${orderId}`, {
+      const response = await fetch(`https://dini-next-kvwx.vercel.app/api/orders/${orderId}`, {
         method: 'DELETE',
       });
 
