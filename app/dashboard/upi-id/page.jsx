@@ -2,15 +2,15 @@
 'use client'
 
 import { FiCreditCard, FiEdit, FiTrash2, FiCheckCircle, FiXCircle, FiPlus, FiSave, FiX } from 'react-icons/fi';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 export default function UPIManagement() {
   const [upiId, setUpiId] = useState('');
   const [businessName, setBusinessName] = useState('');
   const [activeUpi, setActiveUpi] = useState({
-    id: 'yourname@ybl',
-    businessName: 'My Restaurant',
-    status: 'active'
+    id: '',
+    businessName: '',
+    status: 'inactive'
   });
   
   const [upiList, setUpiList] = useState([
@@ -21,17 +21,69 @@ export default function UPIManagement() {
 
   const [editingUpi, setEditingUpi] = useState(null);
 
+  // Initialize from localStorage on component mount
+  useEffect(() => {
+    const storedUpiList = localStorage.getItem('upiList');
+    const storedActiveUpi = localStorage.getItem('activeUpi');
+    
+    if (storedUpiList) {
+      try {
+        setUpiList(JSON.parse(storedUpiList));
+      } catch (error) {
+        console.error("Error parsing stored UPI list:", error);
+      }
+    }
+    
+    if (storedActiveUpi) {
+      try {
+        setActiveUpi(JSON.parse(storedActiveUpi));
+      } catch (error) {
+        console.error("Error parsing stored active UPI:", error);
+      }
+    } else {
+      // Initialize active UPI if there's an active one in the list
+      const active = upiList.find(upi => upi.status === 'active');
+      if (active) {
+        const newActiveUpi = {
+          id: active.upiId,
+          businessName: active.businessName,
+          status: 'active'
+        };
+        setActiveUpi(newActiveUpi);
+        localStorage.setItem('activeUpi', JSON.stringify(newActiveUpi));
+      }
+    }
+  }, []);
+
+  // Store UPI list in localStorage whenever it changes
+  useEffect(() => {
+    localStorage.setItem('upiList', JSON.stringify(upiList));
+  }, [upiList]);
+
+  // Store active UPI in localStorage whenever it changes
+  useEffect(() => {
+    if (activeUpi.status === 'active') {
+      localStorage.setItem('activeUpi', JSON.stringify(activeUpi));
+      // Dispatch event for other components to listen to
+      window.dispatchEvent(new Event('activeUpiChanged'));
+    } else {
+      localStorage.removeItem('activeUpi');
+      window.dispatchEvent(new Event('activeUpiChanged'));
+    }
+  }, [activeUpi]);
+
   const handleSubmit = (e) => {
     e.preventDefault();
     if (upiId && businessName) {
       const newUpi = {
-        id: upiList.length + 1,
+        id: Date.now(), // Use timestamp for unique ID
         upiId,
         businessName,
         status: 'inactive',
         isEditing: false
       };
-      setUpiList([...upiList, newUpi]);
+      const updatedList = [...upiList, newUpi];
+      setUpiList(updatedList);
       setUpiId('');
       setBusinessName('');
     }
@@ -44,13 +96,14 @@ export default function UPIManagement() {
     }));
     setUpiList(updatedList);
     
-    const activatedUpi = updatedList.find(upi => upi.status === 'active');
+    const activatedUpi = updatedList.find(upi => upi.id === id);
     if (activatedUpi) {
-      setActiveUpi({
+      const newActiveUpi = {
         id: activatedUpi.upiId,
         businessName: activatedUpi.businessName,
         status: 'active'
-      });
+      };
+      setActiveUpi(newActiveUpi);
     }
   };
 
@@ -60,11 +113,13 @@ export default function UPIManagement() {
       status: 'inactive'
     }));
     setUpiList(updatedList);
-    setActiveUpi({
+    
+    const inactiveUpi = {
       id: '',
       businessName: '',
       status: 'inactive'
-    });
+    };
+    setActiveUpi(inactiveUpi);
   };
 
   const deleteUpi = (id) => {
@@ -73,11 +128,12 @@ export default function UPIManagement() {
     
     // If we're deleting the active UPI, clear the active UPI
     if (activeUpi.id === upiList.find(upi => upi.id === id)?.upiId) {
-      setActiveUpi({
+      const inactiveUpi = {
         id: '',
         businessName: '',
         status: 'inactive'
-      });
+      };
+      setActiveUpi(inactiveUpi);
     }
   };
 
@@ -108,11 +164,12 @@ export default function UPIManagement() {
     // Update active UPI if it was edited
     if (activeUpi.id === upi.upiId) {
       const updatedUpi = updatedList.find(item => item.id === upi.id);
-      setActiveUpi({
+      const newActiveUpi = {
         id: updatedUpi.upiId,
         businessName: updatedUpi.businessName,
         status: 'active'
-      });
+      };
+      setActiveUpi(newActiveUpi);
     }
   };
 
@@ -186,11 +243,11 @@ export default function UPIManagement() {
         </div>
       </div>
 
-      {/* Currently Active UPI */}
-      {activeUpi.status === 'active' && (
-        <div className="space-y-4">
-          <h2 className="text-lg lg:text-xl font-semibold text-gray-800">Currently Active UPI ID</h2>
-          
+      {/* Currently Active UPI - Centered when no active UPI */}
+      <div className="space-y-4">
+        <h2 className="text-lg lg:text-xl font-semibold text-gray-800">Currently Active UPI ID</h2>
+        
+        {activeUpi.status === 'active' ? (
           <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 lg:p-6">
             <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
               <div className="flex items-center gap-4">
@@ -210,17 +267,29 @@ export default function UPIManagement() {
               
               <button 
                 onClick={deactivateUpi}
-                className="px-4 py-2 bg-[#cb212d] text-white rounded-md hover:bg-[#b81d28] flex items-center justify-center gap-2 transition-colors cursor-pointer text-sm lg:text-base"
+                className="px-4 py-2 bg-[#cb212d] text-white hover:bg-[#b81d28] flex items-center justify-center gap-2 transition-colors cursor-pointer text-sm lg:text-base rounded-md"
               >
                 <FiXCircle /> Deactivate UPI
               </button>
             </div>
-            
-            {/* QR Code Placeholder */}
-           
           </div>
-        </div>
-      )}
+        ) : (
+          <div className="flex flex-col items-center justify-center bg-white rounded-lg shadow-sm border border-gray-200 p-8 lg:p-12 text-center">
+            <div className="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center text-gray-400 text-2xl mb-4">
+              <FiCreditCard />
+            </div>
+            <h3 className="font-semibold text-gray-800 text-lg lg:text-xl mb-2">No Active UPI ID</h3>
+            <p className="text-gray-600 text-sm lg:text-base max-w-md">
+              Activate a UPI ID from the list below to start receiving payments
+            </p>
+            <div className="mt-4">
+              <span className="px-3 py-1.5 bg-[#cb212d33] text-[#cb212d] rounded-full text-xs lg:text-sm">
+                Inactive
+              </span>
+            </div>
+          </div>
+        )}
+      </div>
 
       {/* UPI List */}
       <div className="space-y-4">

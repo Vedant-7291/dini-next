@@ -1,69 +1,109 @@
-// New Order page.jsx - With notification system
+// app/dashboard/new-orders/page.jsx
 'use client'
-import { FiClock, FiCheck, FiX, FiShoppingBag, FiXCircle } from 'react-icons/fi'
-import { useState } from 'react'
+import { FiClock, FiCheck, FiX, FiShoppingBag, FiXCircle, FiRefreshCw } from 'react-icons/fi'
+import { useState, useEffect } from 'react'
 
 export default function NewOrder() {
-  const [orders, setOrders] = useState([
-    {
-      id: 1,
-      time: 'just now',
-      table: '0001',
-      amount: '24.50',
-      items: [
-        { name: 'Burger', price: '8.50' },
-        { name: 'Pizza', price: '12.00' },
-        { name: 'Coke', price: '4.00' }
-      ]
-    },
-    {
-      id: 2,
-      time: '2 mins ago',
-      table: '0002',
-      amount: '18.75',
-      items: [
-        { name: 'Pasta', price: '10.00' },
-        { name: 'Garlic Bread', price: '5.00' },
-        { name: 'Lemonade', price: '3.75' }
-      ]
-    },
-    {
-      id: 3,
-      time: '5 mins ago',
-      table: '0003',
-      amount: '32.25',
-      items: [
-        { name: 'Steak', price: '22.00' },
-        { name: 'Mashed Potatoes', price: '6.00' },
-        { name: 'Red Wine', price: '4.25' }
-      ]
-    }
-  ])
+  const [orders, setOrders] = useState([]);
+  const [notifications, setNotifications] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const [notifications, setNotifications] = useState([])
+  // Fetch orders from backend
+  const fetchOrders = async () => {
+    try {
+      setLoading(true);
+      const response = await fetch('http://localhost:5000/api/orders?status=pending');
+      if (response.ok) {
+        const data = await response.json();
+        setOrders(data);
+      } else {
+        console.error('Failed to fetch orders');
+      }
+    } catch (error) {
+      console.error('Error fetching orders:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchOrders();
+    // Removed automatic polling interval
+  }, []);
 
   // Function to show notification
   const showNotification = (message, type) => {
-    const id = Date.now()
-    const newNotification = { id, message, type }
-    setNotifications(prev => [...prev, newNotification])
+    const id = Date.now();
+    const newNotification = { id, message, type };
+    setNotifications(prev => [...prev, newNotification]);
     
     // Auto remove notification after 3 seconds
     setTimeout(() => {
-      setNotifications(prev => prev.filter(notif => notif.id !== id))
-    }, 3000)
-  }
+      setNotifications(prev => prev.filter(notif => notif.id !== id));
+    }, 3000);
+  };
 
   // Handle accept order
-  const handleAcceptOrder = (orderId) => {
-    setOrders(prev => prev.filter(order => order.id !== orderId))
-    showNotification(`Order #${orderId} accepted successfully!`, 'success')
-  }
+  const handleAcceptOrder = async (orderId) => {
+    try {
+      const response = await fetch(`http://localhost:5000/api/orders/${orderId}/status`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ status: 'accepted' }), // Changed from 'completed' to 'accepted'
+      });
+
+      if (response.ok) {
+        setOrders(prev => prev.filter(order => order._id !== orderId));
+        showNotification(`Order #${orderId.slice(-4)} accepted successfully!`, 'success');
+      } else {
+        console.error('Failed to update order status');
+      }
+    } catch (error) {
+      console.error('Error updating order:', error);
+    }
+  };
 
   // Handle reject order
-  const handleRejectOrder = (orderId) => {
-    setOrders(prev => prev.filter(order => order.id !== orderId))
-    showNotification(`Order #${orderId} rejected.`, 'error')
+  const handleRejectOrder = async (orderId) => {
+    try {
+      const response = await fetch(`http://localhost:5000/api/orders/${orderId}`, {
+        method: 'DELETE',
+      });
+
+      if (response.ok) {
+        setOrders(prev => prev.filter(order => order._id !== orderId));
+        showNotification(`Order #${orderId.slice(-4)} rejected.`, 'error');
+      } else {
+        console.error('Failed to delete order');
+      }
+    } catch (error) {
+      console.error('Error deleting order:', error);
+    }
+  };
+
+  // Format time ago
+  const formatTimeAgo = (dateString) => {
+    const date = new Date(dateString);
+    const now = new Date();
+    const diffInSeconds = Math.floor((now - date) / 1000);
+    
+    if (diffInSeconds < 60) return 'just now';
+    if (diffInSeconds < 3600) return `${Math.floor(diffInSeconds / 60)} mins ago`;
+    if (diffInSeconds < 86400) return `${Math.floor(diffInSeconds / 3600)} hours ago`;
+    return `${Math.floor(diffInSeconds / 86400)} days ago`;
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#cb212d] mx-auto"></div>
+          <p className="mt-4 text-gray-600">Loading orders...</p>
+        </div>
+      </div>
+    );
   }
 
   return (
@@ -97,9 +137,17 @@ export default function NewOrder() {
         ))}
       </div>
 
-      <h1 className="text-xl lg:text-2xl font-bold flex items-center gap-2 border-b border-black pb-2">
-        New Orders
-      </h1>
+      <div className="flex justify-between items-center border-b border-black pb-2">
+        <h1 className="text-xl lg:text-2xl font-bold flex items-center gap-2">
+          New Orders
+        </h1>
+        <button
+          onClick={fetchOrders}
+          className="flex items-center gap-2 px-3 py-1 bg-[#ede9e9] rounded-md hover:bg-gray-200 transition-colors"
+        >
+          <FiRefreshCw size={16} /> Refresh
+        </button>
+      </div>
 
       {orders.length === 0 ? (
         <div className="text-center py-12 bg-[#ede9e9] rounded-lg">
@@ -108,43 +156,50 @@ export default function NewOrder() {
         </div>
       ) : (
         orders.map((order) => (
-          <div key={order.id} className="bg-[#ede9e9] rounded-lg shadow-md overflow-hidden">
+          <div key={order._id} className="bg-[#ede9e9] rounded-lg shadow-md overflow-hidden">
             {/* Order Header - Two columns layout */}
             <div className="p-4 flex justify-between items-start gap-4">
               {/* Left Column - Order Info */}
               <div className="flex-1">
                 <div className="flex items-center gap-2 mb-2">
                   <FiShoppingBag className="text-[#cb212d]" size={20} />
-                  <span className="font-semibold">Order #{order.id}</span>
+                  <span className="font-semibold">Order #{order._id.slice(-4) }</span>
+                  <span className={`text-xs bg-blue-100 ${order.paymentMethod === 'cash' ? 'text-[#cb212d]' : 'text-green-600'} px-2 py-1 rounded`}>
+                      {order.paymentMethod}
+                    </span>
                 </div>
                 
                 <div className="flex flex-col gap-1 text-sm">
                   <div className="flex items-center gap-2 text-gray-600">
                     <FiClock size={14} />
-                    <span>{order.time}</span>
+                    <span>{formatTimeAgo(order.createdAt)}</span>
                   </div>
                   
                   <div className="flex items-center gap-2">
                     <FiShoppingBag size={14} />
-                    <span>Table {order.table}</span>
+                    <span>Table {order.tableNumber}</span>
                   </div>
+                  
                 </div>
               </div>
+              <div className="flex items-start gap-2">
+                    
+                  </div>
               
               {/* Right Column - Price and Actions */}
-              <div className="flex flex-col lg:flex-row  items-end gap-2">
+              <div className="flex flex-col lg:flex-row items-end gap-2">
                 <span className="font-bold text-lg lg:text-xl">
-                  ₹ {order.amount}
+                  ₹ {order.totalAmount.toFixed(2)}
                 </span>
                 <div className="flex flex-col lg:flex-row gap-2">
                   <button 
-                    onClick={() => handleAcceptOrder(order.id)}
+                    onClick={() => handleAcceptOrder(order._id)}
                     className="px-3 py-1 bg-[#00bf63] text-white rounded flex items-center gap-1 text-sm cursor-pointer hover:bg-[#00a758] transition-colors"
                   >
                     <FiCheck /> Accept
                   </button>
                   <button 
-                    onClick={() => handleRejectOrder(order.id)}
+                    onClick={() => handleRejectOrder(order._id)}
                     className="px-3 py-1 bg-[#cb212d] text-white rounded flex items-center gap-1 text-sm cursor-pointer hover:bg-[#b81d28] transition-colors"
                   >
                     <FiX /> Reject
@@ -158,16 +213,16 @@ export default function NewOrder() {
               {order.items.map((item, index) => (
                 <div 
                   key={index} 
-                  className="flex items-center justify-between p-3 rounded-xl"
-                  style={{ backgroundColor: 'white' }}
+                  className="flex items-center justify-between p-3 rounded-xl bg-white"
                 >
                   <div className="flex items-center gap-3">
                     <div className="w-6 h-6 rounded-full bg-[#cb212d33] flex items-center justify-center text-[#cb212d] text-xs font-bold">
                       {index + 1}
                     </div>
                     <span className="text-sm lg:text-base">{item.name}</span>
+                    <span className="text-xs text-gray-500">x{item.quantity}</span>
                   </div>
-                  <span className="font-medium text-sm lg:text-base">{item.price}</span>
+                  <span className="font-medium text-sm lg:text-base">₹{(item.price * item.quantity).toFixed(2)}</span>
                 </div>
               ))}
             </div>
@@ -175,5 +230,5 @@ export default function NewOrder() {
         ))
       )}
     </div>
-  )
+  );
 }

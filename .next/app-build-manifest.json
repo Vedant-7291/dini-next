@@ -14,6 +14,7 @@
     "/dashboard/layout": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
+      "static/css/app/dashboard/layout.css",
       "static/chunks/app/dashboard/layout.js"
     ],
     "/dashboard/page": [
@@ -21,25 +22,15 @@
       "static/chunks/main-app.js",
       "static/chunks/app/dashboard/page.js"
     ],
-    "/dashboard/new-order/page": [
+    "/dashboard/upi-id/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/dashboard/new-order/page.js"
-    ],
-    "/dashboard/order-menu/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/dashboard/order-menu/page.js"
+      "static/chunks/app/dashboard/upi-id/page.js"
     ],
     "/dashboard/manage-menu/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
       "static/chunks/app/dashboard/manage-menu/page.js"
-    ],
-    "/dashboard/upi-id/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/dashboard/upi-id/page.js"
     ]
   }
 }

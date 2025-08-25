@@ -1,6 +1,18 @@
-import '../globals.css'
-import Sidebar from '../components/Sidebar'
-import Header from '../components/Header'
+// app/dashboard/layout.jsx
+import { Poppins } from 'next/font/google'
+import Sidebar from '../components/layout/Sidebar'
+import Header from '../components/layout/Header'
+
+const poppins = Poppins({ 
+  weight: ['300', '400', '500', '600', '700'],
+  subsets: ['latin'],
+  display: 'swap'
+})
+
+export const metadata = {
+  title: 'SmartDini Dashboard',
+  description: 'Restaurant management system',
+}
 
 export default function DashboardLayout({ children }) {
   return (

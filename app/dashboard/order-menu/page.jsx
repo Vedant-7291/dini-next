@@ -1,94 +1,97 @@
-// Order Menu page.jsx - Center aligned order counts
+// app/dashboard/order-menu/page.jsx
 'use client'
 
-import { FiCheckCircle, FiClock, FiShoppingBag, FiChevronDown } from 'react-icons/fi';
-import { useState } from 'react';
+import { FiCheckCircle, FiClock, FiShoppingBag, FiChevronDown, FiRefreshCw } from 'react-icons/fi';
+import { useState, useEffect } from 'react';
 
 export default function OrderMenu() {
   const [openDropdown, setOpenDropdown] = useState(null);
   const [showCompleted, setShowCompleted] = useState(false);
+  const [acceptedOrders, setAcceptedOrders] = useState([]);
+  const [completedOrders, setCompletedOrders] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [stats, setStats] = useState({ total: 0, accepted: 0, completed: 0 });
 
-  // Hardcoded orders data
-  const pendingOrders = [
-    {
-      id: 6,
-      time: '15 mins ago',
-      table: '0003',
-      amount: '24.50',
-      items: [
-        { name: 'Burger', price: '8.50' },
-        { name: 'Pizza', price: '12.00' },
-        { name: 'Coke', price: '4.00' },
-      ]
-    },
-    {
-      id: 7,
-      time: '25 mins ago',
-      table: '0005',
-      amount: '18.75',
-      items: [
-        { name: 'Pasta', price: '10.00' },
-        { name: 'Garlic Bread', price: '5.00' },
-        { name: 'Lemonade', price: '3.75' },
-      ]
-    },
-    {
-      id: 8,
-      time: '35 mins ago',
-      table: '0002',
-      amount: '32.25',
-      items: [
-        { name: 'Steak', price: '22.00' },
-        { name: 'Mashed Potatoes', price: '6.00' },
-        { name: 'Red Wine', price: '4.25' },
-      ]
+  // Fetch orders from backend
+  const fetchOrders = async () => {
+    try {
+      setLoading(true);
+      
+      // Fetch accepted orders
+      const acceptedResponse = await fetch('http://localhost:5000/api/orders?status=accepted');
+      const acceptedData = acceptedResponse.ok ? await acceptedResponse.json() : [];
+      
+      // Fetch completed orders
+      const completedResponse = await fetch('http://localhost:5000/api/orders?status=completed');
+      const completedData = completedResponse.ok ? await completedResponse.json() : [];
+      
+      // Fetch stats
+      const statsResponse = await fetch('http://localhost:5000/api/orders/stats');
+      const statsData = statsResponse.ok ? await statsResponse.json() : { total: 0, accepted: 0, completed: 0 };
+      
+      setAcceptedOrders(acceptedData);
+      setCompletedOrders(completedData);
+      setStats(statsData);
+    } catch (error) {
+      console.error('Error fetching orders:', error);
+    } finally {
+      setLoading(false);
     }
-  ];
+  };
 
-  const completedOrders = [
-    {
-      id: 1,
-      time: '1 hour ago',
-      table: '0001',
-      amount: '24.50',
-      items: [
-        { name: 'Burger', price: '8.50' },
-        { name: 'Pizza', price: '12.00' },
-        { name: 'Coke', price: '4.00' },
-      ]
-    },
-    {
-      id: 2,
-      time: '2 hours ago',
-      table: '0004',
-      amount: '18.00',
-      items: [
-        { name: 'Pasta', price: '10.00' },
-        { name: 'Garlic Bread', price: '5.00' },
-        { name: 'Lemonade', price: '3.00' },
-      ]
-    },
-    {
-      id: 3,
-      time: '3 hours ago',
-      table: '0006',
-      amount: '28.50',
-      items: [
-        { name: 'Fish & Chips', price: '14.00' },
-        { name: 'Beer', price: '6.00' },
-        { name: 'Ice Cream', price: '8.50' },
-      ]
-    }
-  ];
+  useEffect(() => {
+    fetchOrders();
+    // Removed automatic polling interval
+  }, []);
 
   const toggleDropdown = (orderId) => {
     setOpenDropdown(openDropdown === orderId ? null : orderId);
   };
 
-  const markAsCompleted = (orderId) => {
-    console.log(`Marking order ${orderId} as completed`);
-    setOpenDropdown(null);
+  const markAsCompleted = async (orderId) => {
+    try {
+      const response = await fetch(`http://localhost:5000/api/orders/${orderId}/status`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ status: 'completed' }),
+      });
+
+      if (response.ok) {
+        // Refresh orders
+        fetchOrders();
+        setOpenDropdown(null);
+      } else {
+        console.error('Failed to update order status');
+      }
+    } catch (error) {
+      console.error('Error updating order:', error);
+    }
   };
+
+  // Format time ago
+  const formatTimeAgo = (dateString) => {
+    const date = new Date(dateString);
+    const now = new Date();
+    const diffInSeconds = Math.floor((now - date) / 1000);
+    
+    if (diffInSeconds < 60) return 'just now';
+    if (diffInSeconds < 3600) return `${Math.floor(diffInSeconds / 60)} mins ago`;
+    if (diffInSeconds < 86400) return `${Math.floor(diffInSeconds / 3600)} hours ago`;
+    return `${Math.floor(diffInSeconds / 86400)} days ago`;
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#cb212d] mx-auto"></div>
+          <p className="mt-4 text-gray-600">Loading orders...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6 lg:space-y-8">
@@ -97,11 +100,17 @@ export default function OrderMenu() {
         <h1 className="text-xl lg:text-2xl font-bold">Order Management</h1>
         <div className="flex justify-center gap-3 lg:gap-4 text-sm w-full lg:w-auto">
           <span className="text-[#00bf63] flex items-center gap-1 font-bold text-base lg:text-lg">
-            <FiCheckCircle /> 100 Completed
+            <FiCheckCircle /> {stats.completed} Completed
           </span>
           <span className="text-[#cb212d] flex items-center gap-1 font-bold text-base lg:text-xl">
-            <FiClock /> 24 Pending
+            <FiClock /> {stats.accepted} Pending
           </span>
+          <button
+            onClick={fetchOrders}
+            className="flex items-center gap-1 px-2 py-1 bg-[#ede9e9] rounded-md hover:bg-gray-200 transition-colors"
+          >
+            <FiRefreshCw size={14} /> Refresh
+          </button>
         </div>
       </div>
       
@@ -112,7 +121,7 @@ export default function OrderMenu() {
             className={`px-4 py-2 rounded-full text-sm font-medium ${!showCompleted ? 'bg-[#cb212d] text-white' : 'text-gray-600'}`}
             onClick={() => setShowCompleted(false)}
           >
-            Pending Orders
+             Pending Orders
           </button>
           <button
             className={`px-4 py-2 rounded-full text-sm font-medium ${showCompleted ? 'bg-[#00bf63] text-white' : 'text-gray-600'}`}
@@ -125,33 +134,33 @@ export default function OrderMenu() {
       
       {/* Main content grid */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8">
-        {/* Pending orders column - hidden on mobile when showing completed */}
+        {/* Accepted orders column - hidden on mobile when showing completed */}
         <div className={showCompleted ? 'hidden lg:block' : ''}>
           <h2 className="text-lg lg:text-xl font-semibold mb-4 flex items-center gap-2">
             <FiClock className="text-[#cb212d] text-xl" /> Pending Orders
           </h2>
           
           <div className="space-y-4 lg:space-y-6">
-            {pendingOrders.map((order) => (
-              <div key={order.id} className="bg-[#ede9e9] rounded-lg shadow-md overflow-hidden">
+            {acceptedOrders.map((order) => (
+              <div key={order._id} className="bg-[#ede9e9] rounded-lg shadow-md overflow-hidden">
                 {/* Order header - Two columns layout */}
                 <div className="p-4 flex justify-between items-start gap-4">
                   {/* Left Column - Order Info */}
                   <div className="flex-1">
                     <div className="flex items-center gap-2 mb-2">
                       <FiShoppingBag className="text-[#cb212d]" size={18} />
-                      <span className="font-semibold">Order #{order.id}</span>
+                      <span className="font-semibold">Order #{order._id.slice(-4)}</span>
                     </div>
                     
                     <div className="flex flex-col gap-1 text-sm">
                       <div className="flex items-center gap-2 text-gray-600">
                         <FiClock size={14} />
-                        <span>{order.time}</span>
+                        <span>{formatTimeAgo(order.createdAt)}</span>
                       </div>
                       
                       <div className="flex items-center gap-2">
                         <FiShoppingBag size={14} />
-                        <span>Table {order.table}</span>
+                        <span>Table {order.tableNumber}</span>
                       </div>
                     </div>
                   </div>
@@ -159,22 +168,22 @@ export default function OrderMenu() {
                   {/* Right Column - Price and Status */}
                   <div className="flex flex-row items-end gap-2">
                     <span className="font-bold text-lg lg:text-xl">
-                      ₹ {order.amount}
+                      ₹ {order.totalAmount.toFixed(2)}
                     </span>
                     <div className="relative">
                       <button 
                         className="cursor-pointer text-xs sm:text-sm px-2 py-1 bg-[#cb212d] text-white rounded-full flex items-center gap-1 hover:bg-[#b81d28]"
-                        onClick={() => toggleDropdown(order.id)}
+                        onClick={() => toggleDropdown(order._id)}
                       >
                         Pending
                         <FiChevronDown size={10} />
                       </button>
                       
-                      {openDropdown === order.id && (
+                      {openDropdown === order._id && (
                         <div className="absolute right-0 mt-1 bg-white border border-gray-200 rounded-md shadow-lg z-10">
                           <button 
                             className="cursor-pointer block w-full text-left px-3 py-2 text-sm text-[#00bf63] hover:bg-[#00bf6333]"
-                            onClick={() => markAsCompleted(order.id)}
+                            onClick={() => markAsCompleted(order._id)}
                           >
                             Completed
                           </button>
@@ -195,8 +204,9 @@ export default function OrderMenu() {
                             {index + 1}
                           </div>
                           <span className="text-sm lg:text-base">{item.name}</span>
+                          <span className="text-xs text-gray-500">x{item.quantity}</span>
                         </div>
-                        <span className="font-medium text-sm lg:text-base">₹{item.price}</span>
+                        <span className="font-medium text-sm lg:text-base">₹{(item.price * item.quantity).toFixed(2)}</span>
                       </div>
                     ))}
                   </div>
@@ -206,7 +216,7 @@ export default function OrderMenu() {
           </div>
         </div>
         
-        {/* Completed orders column - hidden on mobile when showing pending */}
+        {/* Completed orders column - hidden on mobile when showing accepted */}
         <div className={!showCompleted ? 'hidden lg:block' : ''}>
           <h2 className="text-lg lg:text-xl font-semibold mb-4 flex items-center gap-2">
             <FiCheckCircle className="text-[#00bf63] text-xl" /> Completed Orders
@@ -214,33 +224,39 @@ export default function OrderMenu() {
           
           <div className="space-y-4 lg:space-y-6">
             {completedOrders.map((order) => (
-              <div key={order.id} className="bg-[#ede9e9] rounded-lg shadow-md overflow-hidden">
+              <div key={order._id} className="bg-[#ede9e9] rounded-lg shadow-md overflow-hidden">
                 {/* Order header - Two columns layout */}
                 <div className="p-4 flex justify-between items-start gap-4">
                   {/* Left Column - Order Info */}
                   <div className="lg:flex-1 flex-col">
                     <div className="flex items-center gap-2 mb-2">
                       <FiShoppingBag className="text-[#00bf63]" size={18} />
-                      <span className="font-semibold">Order #{order.id}</span>
+                      <span className="font-semibold">Order #{order._id.slice(-4)}</span>
                     </div>
                     
                     <div className="flex flex-col gap-1 text-sm">
                       <div className="flex items-center gap-2 text-gray-600">
                         <FiClock size={14} />
-                        <span>{order.time}</span>
+                        <span>{formatTimeAgo(order.createdAt)}</span>
                       </div>
                       
                       <div className="flex items-center gap-2">
                         <FiShoppingBag size={14} />
-                        <span>Table {order.table}</span>
+                        <span>Table {order.tableNumber}</span>
                       </div>
+                      {order.completedAt && (
+                        <div className="flex items-center gap-2 text-green-600">
+                          <FiCheckCircle size={14} />
+                          <span>Completed {formatTimeAgo(order.completedAt)}</span>
+                        </div>
+                      )}
                     </div>
                   </div>
                   
                   {/* Right Column - Price and Status */}
                   <div className="flex lg:flex-row flex-col items-end gap-2">
                     <span className="font-bold text-lg lg:text-xl">
-                      ₹ {order.amount}
+                      ₹ {order.totalAmount.toFixed(2)}
                     </span>
                     <span className="text-xs sm:text-sm px-2 py-1 bg-[#00bf63] text-white rounded-full">
                       Completed
@@ -259,8 +275,9 @@ export default function OrderMenu() {
                             {index + 1}
                           </div>
                           <span className="text-sm lg:text-base">{item.name}</span>
+                          <span className="text-xs text-gray-500">x{item.quantity}</span>
                         </div>
-                        <span className="font-medium text-sm lg:text-base">₹{item.price}</span>
+                        <span className="font-medium text-sm lg:text-base">₹{(item.price * item.quantity).toFixed(2)}</span>
                       </div>
                     ))}
                   </div>
