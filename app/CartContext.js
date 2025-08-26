@@ -30,7 +30,7 @@ export function CartProvider({ children }) {
         setLoading(true);
         setError(null);
         
-        const response = await fetch('https://dini-next.onrender.com/api/menu', {
+        const response = await fetch('/api/menu', {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
@@ -115,7 +115,7 @@ export function CartProvider({ children }) {
     try {
       console.log('Creating order with data:', orderData);
       
-      const response = await fetch('https://dini-next.onrender.com/api/orders', {
+      const response = await fetch('/api/orders', {
         method: 'POST',
         headers: { 
           'Content-Type': 'application/json',
@@ -157,7 +157,7 @@ export function CartProvider({ children }) {
       setLoading(true);
       setError(null);
       
-      const response = await fetch('https://dini-next.onrender.com/api/menu');
+      const response = await fetch('/api/menu');
       if (response.ok) {
         const data = await response.json();
         setMenuItems(data);
