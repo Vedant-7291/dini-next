@@ -50,7 +50,7 @@ export default function OrderMenu() {
 
   const markAsCompleted = async (orderId) => {
     try {
-      const response = await fetch('/api/orders/${orderId}/status`, {
+      const response = await fetch(`/api/orders/${orderId}/status`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
