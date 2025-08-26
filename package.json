@@ -3,7 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "concurrently \"npm run dev:frontend\" \"npm run dev:backend\"",
+    "dev:frontend": "next dev",
+    "dev:backend": "cd server && npm run dev",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"
@@ -14,7 +16,8 @@
     "react": "19.1.0",
     "react-dom": "19.1.0",
     "react-icons": "^5.5.0",
-    "remixicon": "^4.6.0"
+    "remixicon": "^4.6.0",
+    "concurrently": "^8.2.2"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
