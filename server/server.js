@@ -1,7 +1,9 @@
+
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
+const fs = require('fs'); // Added fs module
 const connectDB = require('./config/database');
 
 // Route imports
@@ -23,12 +25,37 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 // In production, serve static files from the frontend build
 
   const frontendPath = path.join(__dirname, '../app/.next');
-  app.use(express.static(frontendPath));
   
-  // Handle all other requests by returning the frontend
+  // Serve static assets from Next.js build
+  app.use('/_next', express.static(path.join(frontendPath, 'static')));
+  
+  // Handle all other requests by serving the appropriate HTML file
   app.get('*', (req, res) => {
-    res.sendFile(path.join(frontendPath,'server','pages', 'index.html'));
+    const basePath = path.join(frontendPath, 'server/app');
+    let filePath;
+    
+    // Handle root path
+    if (req.path === '/') {
+      filePath = path.join(basePath, 'page.html');
+    } 
+    // Handle nested paths like /dashboard
+    else {
+      filePath = path.join(basePath, req.path, 'page.html');
+    }
+    
+    // Fallback to index.html if specific file doesn't exist
+    if (!fs.existsSync(filePath)) {
+      filePath = path.join(basePath, 'page.html');
+    }
+    
+    // Final fallback - return 404 if no file exists
+    if (!fs.existsSync(filePath)) {
+      return res.status(404).send('Page not found');
+    }
+    
+    res.sendFile(filePath);
   });
+
 
 // Request logging middleware
 app.use((req, res, next) => {
