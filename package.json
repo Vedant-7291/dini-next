@@ -9,10 +9,9 @@
     "build": "npm run build:frontend && npm run build:backend",
     "build:frontend": "cd app && npm run build",
     "build:backend": "cd server && npm install",
-    "start": "npm run start:backend",
-    "start:backend": "cd server && npm start",
-    "start:frontend": "cd app && npm start",
+    "start": "cd server && npm start",
     "install:all": "npm install && cd server && npm install && cd ../app && npm install",
+    "render-build": "npm run install:all && npm run build",
     "lint": "cd app && npm run lint"
   },
   "devDependencies": {
