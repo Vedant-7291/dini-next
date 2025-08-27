@@ -1,14 +1,17 @@
 // next.config.mjs
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  // Use environment variable for API URL with fallback for local development
   async rewrites() {
     return [
       {
-        source: '/api/:path*', // Any request that starts with /api/
-        destination: 'http://localhost:5000/api/:path*', // Gets forwarded to Express
+        source: '/api/:path*',
+        destination: 'https://dini-next-2.onrender.com'
       },
     ];
   },
+  // Enable standalone output for better performance on Render
+  output: 'standalone',
 };
 
 export default nextConfig;
