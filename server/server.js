@@ -1,4 +1,3 @@
-// server/server.js
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
@@ -23,11 +22,12 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // In production, serve static files from the frontend build
 if (process.env.NODE_ENV === 'production') {
-  app.use(express.static(path.join(__dirname, '../app/frontend/.next')));
+  const frontendPath = path.join(__dirname, '../app/frontend/.next');
+  app.use(express.static(frontendPath));
   
-  // Handle React routing, return all requests to React app
-  app.get('*', function(req, res) {
-    res.sendFile(path.join(__dirname, '../app/frontend/.next', 'index.html'));
+  // Handle all other requests by returning the frontend
+  app.get('*', (req, res) => {
+    res.sendFile(path.join(frontendPath, 'index.html'));
   });
 }
 
@@ -37,12 +37,12 @@ app.use((req, res, next) => {
   next();
 });
 
-// Routes
+// API Routes
 app.use('/api/orders', orderRoutes);
 app.use('/api/menu', menuRoutes);
 app.use('/api/upi', upiRoutes);
 
-// Health check endpoint with more details
+// Health check endpoint
 app.get('/api/health', (req, res) => {
   res.json({ 
     status: 'Server is running', 
@@ -51,9 +51,8 @@ app.get('/api/health', (req, res) => {
   });
 });
 
-// Handle undefined routes
+// Handle undefined API routes
 app.use('/api/*', (req, res) => {
-  console.warn(`API route not found: ${req.method} ${req.originalUrl}`);
   res.status(404).json({ 
     error: 'API endpoint not found',
     path: req.originalUrl,
