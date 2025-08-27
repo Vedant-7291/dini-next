@@ -21,15 +21,14 @@ app.use(express.json({ limit: '10mb' }));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // In production, serve static files from the frontend build
-if (process.env.NODE_ENV === 'production') {
+
   const frontendPath = path.join(__dirname, '../app/.next');
   app.use(express.static(frontendPath));
   
   // Handle all other requests by returning the frontend
   app.get('*', (req, res) => {
-    res.sendFile(path.join(frontendPath, 'index.html'));
+    res.sendFile(path.join(frontendPath,'server','pages', 'index.html'));
   });
-}
 
 // Request logging middleware
 app.use((req, res, next) => {
