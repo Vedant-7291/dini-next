@@ -6,7 +6,7 @@ const nextConfig = {
     return [
       {
         source: '/api/:path*',
-        destination: 'https://dini-next-2.onrender.com'
+        destination: 'https://dini-next-3.onrender.com'
       },
     ];
   },
