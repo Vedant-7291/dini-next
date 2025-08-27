@@ -5,48 +5,72 @@ const cors = require('cors');
 const path = require('path');
 const connectDB = require('./config/database');
 
+// Route imports
+const orderRoutes = require('./routes/orders');
+const menuRoutes = require('./routes/menu');
+const upiRoutes = require('./routes/upi');
+
 const app = express();
 const PORT = process.env.PORT || 5000;
 
 // Connect to database
 connectDB();
 
-// Middleware - Allow requests from Next.js frontend during development
-app.use(cors({
-  origin: [
-    'http://localhost:3000', // Next.js dev server
-    'http://127.0.0.1:3000'  // Alternative localhost
-  ],
-  credentials: true
-}));
-
-app.use(express.json());
+// Middleware
+app.use(cors());
+app.use(express.json({ limit: '10mb' }));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
-// Your existing routes
-app.use('/api/orders', require('./routes/orders'));
-app.use('/api/menu', require('./routes/menu'));
-app.use('/api/upi', require('./routes/upi'));
+// In production, serve static files from the frontend build
+if (process.env.NODE_ENV === 'production') {
+  app.use(express.static(path.join(__dirname, '../app/frontend/.next')));
+  
+  // Handle React routing, return all requests to React app
+  app.get('*', function(req, res) {
+    res.sendFile(path.join(__dirname, '../app/frontend/.next', 'index.html'));
+  });
+}
 
-// Health check endpoint
+// Request logging middleware
+app.use((req, res, next) => {
+  console.log(`${new Date().toISOString()} - ${req.method} ${req.originalUrl}`);
+  next();
+});
+
+// Routes
+app.use('/api/orders', orderRoutes);
+app.use('/api/menu', menuRoutes);
+app.use('/api/upi', upiRoutes);
+
+// Health check endpoint with more details
 app.get('/api/health', (req, res) => {
   res.json({ 
-    status: 'Express server is running',
-    port: PORT,
-    timestamp: new Date().toISOString()
+    status: 'Server is running', 
+    timestamp: new Date().toISOString(),
+    environment: process.env.NODE_ENV || 'development'
   });
 });
 
-// Test endpoint to verify rewrites are working
-app.get('/api/test-rewrite', (req, res) => {
-  res.json({ 
-    message: 'This came from Express server!',
-    server: 'Express on port 5000',
-    requestedFrom: req.get('host')
+// Handle undefined routes
+app.use('/api/*', (req, res) => {
+  console.warn(`API route not found: ${req.method} ${req.originalUrl}`);
+  res.status(404).json({ 
+    error: 'API endpoint not found',
+    path: req.originalUrl,
+    method: req.method
   });
 });
 
-app.listen(PORT, () => {
-  console.log(`✅ Express server running on port ${PORT}`);
-  console.log(`📊 Health check: http://localhost:${PORT}/api/health`);
+// Global error handler
+app.use((error, req, res, next) => {
+  console.error('Server error:', error);
+  res.status(500).json({ 
+    error: 'Internal server error',
+    message: error.message 
+  });
+});
+
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`Server running on port ${PORT}`);
+  console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
 });
