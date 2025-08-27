@@ -22,7 +22,7 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // In production, serve static files from the frontend build
 if (process.env.NODE_ENV === 'production') {
-  const frontendPath = path.join(__dirname, '../app/frontend/.next');
+  const frontendPath = path.join(__dirname, '../app/.next');
   app.use(express.static(frontendPath));
   
   // Handle all other requests by returning the frontend
