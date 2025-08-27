@@ -1,23 +1,22 @@
 {
-  "name": "smartdini-monorepo",
+  "name": "my-fullstack-app",
   "version": "1.0.0",
-  "description": "SmartDini restaurant management system",
+  "description": "Full-stack Next.js application with custom backend",
   "scripts": {
     "dev": "concurrently \"npm run dev:frontend\" \"npm run dev:backend\"",
-    "dev:frontend": "cd app && npm run dev",
+    "dev:frontend": "next dev",
     "dev:backend": "cd server && npm run dev",
     "build": "npm run build:frontend && npm run build:backend",
-    "build:frontend": "cd app && npm run build",
+    "build:frontend": "next build",
     "build:backend": "cd server && npm install",
-    "start": "cd server && npm start",
-    "install:all": "npm install && cd server && npm install && cd ../app && npm install",
-    "render-build": "cd app && npm install && npm run build && cd ../server && npm install",
-    "lint": "cd app && npm run lint"
+    "start": "node server/server.js",
+    "install-deps": "npm install && cd server && npm install",
+    "render-build": "npm run build"
+  },
+  "dependencies": {
+    "concurrently": "^7.6.0"
   },
   "devDependencies": {
-    "concurrently": "^8.2.2"
-  },
-  "engines": {
-    "node": ">=18.0.0"
+    "concurrently": "^7.6.0"
   }
 }
